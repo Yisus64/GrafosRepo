@@ -3,8 +3,9 @@ from SRC.practica2 import *
 
 def main():
     grafo = lee_grafo_archivo("test")
-    grados = vertice_aislado(grafo)
-    print(grados)
+    componentes = componentes_conexas(grafo)
+    print(componentes)
+    print(es_conexo(grafo))
     
 if __name__ == '__main__':
     main()

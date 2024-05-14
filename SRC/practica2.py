@@ -35,10 +35,18 @@ def vertice_aislado(grafo_lista):
     
     return aislados
 
+def conectado_con(grupo: set, aristas):
+    for v1, v2 in aristas:
+        if v1 in grupo:
+            grupo.add(v2)
+        if v2 in grupo:
+            grupo.add(v1)
+    
+    return grupo
+    
 def componentes_conexas(grafo_lista):
     '''
-    Dado un grafo en representacion de lista, obtiene sus componentes conex
-    as.
+    Dado un grafo en representacion de lista, obtiene sus componentes conexas.
     Ejemplo Entrada: 
         (['A','B','C','D','E'],[('A','B'),('B','C'),('C','B'),('D','E')])
     Ejemplo formato salida: 
@@ -46,11 +54,25 @@ def componentes_conexas(grafo_lista):
     '''
     V, E = grafo_lista
     aristas = E
-    grupos = []
-    while aristas:
-        grupo = {}
-        v1, v2 = aristas.pop()
-        for arista in aristas:
+    componentes = list()
+    v_usados = set()
+    for v in V:
+        if v in v_usados:
+            continue
+        grupo = {v}
+        nuevo_g = conectado_con(grupo, aristas)
+        while nuevo_g != grupo:
+            grupo = nuevo_g
+            nuevo_g = conectado_con(grupo, aristas)
+        
+        componentes.append(list(grupo))
+        v_usados = v_usados | grupo
+    
+    return componentes
+
+
+
+
 
 
 
@@ -59,4 +81,4 @@ def es_conexo(grafo_lista):
     Dado un grafo en representacion de lista, y utilizando la función "componentes_conexas"
     devuelve True/False si el grafo es o no conexo.
     '''
-    pass
+    return (len(componentes_conexas(grafo_lista)) == 1)
