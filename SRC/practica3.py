@@ -1,3 +1,5 @@
+from SRC.practica2 import conectado_con
+
 def valida_nodo_en_grafo(grafo_lista, nodo):
     '''
     Dado un grafo en representacion de lista, y un nodo, me devuelve True si el nodo está en el Grafo
@@ -7,9 +9,25 @@ def valida_nodo_en_grafo(grafo_lista, nodo):
     Ejemplo formato salida: 
         False
     '''
-    vertices = grafo_lista[0]
-    return (nodo in vertices)
-def encuentra_camino(grafo_lista, nodo_ini, nodo_fin):
+    V, _ = grafo_lista
+    return (nodo in V)
+
+
+def encuentra_vecinos(grafo, vertice):
+    _, E = grafo
+    vecinos = set()
+    for (v1, v2) in E:
+        if v1 == vertice:
+            vecinos.add(v2)
+        if v2 == vertice:
+            vecinos.add(v1)
+    
+    if vertice in vecinos:
+        vecinos.remove(vertice)
+    return list(vecinos)
+
+
+def encuentra_camino_abierto(grafo_lista, nodo_ini, nodo_fin):
     '''
     Dado un grafo en representacion de lista, el nodo inicial y final de un camino
     Me devuelve una lista con los vértices del camino, o vacio si no existe
@@ -22,18 +40,26 @@ def encuentra_camino(grafo_lista, nodo_ini, nodo_fin):
     '''
     
     vertices, aristas = grafo_lista
-    inicio = nodo_ini
-    fin = nodo_fin
+
+    vecinos = encuentra_vecinos(grafo_lista, nodo_ini)
+
+    for vecino in vecinos:
+        ## Caso Base Positivo
+        if vecino == nodo_fin:
+            return [nodo_ini, nodo_fin]
+        
+        ## Llamada Recursiva
+        vertices_reducidos = [v for v in vertices if v != nodo_ini]
+        aristas_reducidas = [(v1, v2) for (v1, v2) in aristas if v1 != nodo_ini and v2 != nodo_ini]
+        grafo_reducido = (vertices_reducidos, aristas_reducidas)
+
+        camino = encuentra_camino_abierto(grafo_reducido, vecino, nodo_fin)
+
+        ## Vuelta Positiva
+        if camino != []:
+            return [nodo_ini] + camino
     
-    if not valida_nodo_en_grafo(grafo_lista, inicio) or not valida_nodo_en_grafo(grafo_lista, fin):
-        return []
-    
-    if inicio == fin:
-        return [inicio]
-    
-    
-    
-    pass
+    return []
 
 def encuentra_camino_cerrado(grafo_lista, nodo):
     '''
