@@ -71,11 +71,6 @@ def componentes_conexas(grafo_lista):
     return componentes
 
 
-
-
-
-
-
 def es_conexo(grafo_lista):
     '''
     Dado un grafo en representacion de lista, y utilizando la función "componentes_conexas"
